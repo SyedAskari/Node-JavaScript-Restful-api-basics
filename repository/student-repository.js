@@ -59,6 +59,51 @@ let studentRepo = {
                 })
             }
         })
+    },
+    update: function(newData, id, resolve, reject) {
+        fs.readFile(FILE_NAME, function(error, data) {
+            if(error) {
+                reject(error);
+            } else {
+                let students = JSON.parse(data);
+                let student = students.find(s => s.id == id);
+                if(student) {
+                    // assign will take everything in the current student object
+                    // and any values that are in the new data properties
+                    // that match, it will change the data.
+                    Object.assign(student,newData);
+                    // Since we have a reference to that changed object and we have changed it
+                    // we can then write back our data
+                    fs.writeFile(FILE_NAME, JSON.stringify(students), function(error) {
+                        if(error) {
+                            reject(error);
+                        } else {
+                            resolve(newData);
+                        }
+                    })
+                }
+            }
+        })
+    },
+    delete: function(id, resolve, reject) {
+        fs.readFile(FILE_NAME, function(error, data){
+            if(error){
+                reject(error);
+            } else {
+                let students = JSON.parse(data);
+                let index = students.findIndex(s => s.id == id);
+                if(index != -1) {
+                    students.splice(index,1);
+                    fs.writeFile(FILE_NAME, JSON.stringify(students), function(error) {
+                        if(error) {
+                            reject(error);
+                        } else {
+                            resolve(index);
+                        }
+                    })
+                }
+            }
+        })
     }
 };
 

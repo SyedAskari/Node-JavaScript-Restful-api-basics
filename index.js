@@ -79,10 +79,10 @@ router.get('/:id', function(req, res, next) {
             res.status(404).json({
                 "status": 404,
                 "statusText": "Not Found",
-                "message": " The pie " + req.params.id + " could not be found",
+                "message": " The student " + req.params.id + " could not be found",
                 "error": {
                     "code": "NOT_FOUND",
-                    "message": " The pie " + req.params.id + " could not be found"
+                    "message": " The student " + req.params.id + " could not be found"
                 }
             });
         }
@@ -100,6 +100,95 @@ router.post('/', function(req, res, next) {
             "message": "New student added",
             "data": data
         });
+    }, function(error) {
+        next(error);
+    })
+})
+
+
+router.put('/:id', function(req, res, next) {
+    studentRepo.getById(req.params.id, function(data) {
+        if(data) {
+            studentRepo.update(req.body, req.params.id, function(data) {
+                res.status(200).json({
+                    "status": 201,
+                    "statusText": "OK",
+                    "message": "Student with " + req.params.id + " has been updated",
+                    "data": data
+                })
+            }, function(error) {
+                next(error);
+            })
+        } else {
+            res.status(400).json({
+                "status": 400,
+                "statusText": "Not Found",
+                "message": " The student " + req.params.id + " could not be found",
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": " The student " + req.params.id + " could not be found"
+                }
+            })
+        }
+    }, function(error) {
+        next(error);
+    })
+})
+
+
+router.delete('/:id', function(req, res, next) {
+    studentRepo.getById(req.params.id, function(data) {
+        if(data) {
+            studentRepo.delete(req.params.id, function(data) {
+                res.status(200).json({
+                    "status": 201,
+                    "statusText": "OK",
+                    "message": "Student with " + req.params.id + " has been deleted",
+                    "data": "Pie " + req.params.id + " deleted"
+                })
+            }, function(error) {
+                next(error);
+            })
+        } else {
+            res.status(400).json({
+                "status": 400,
+                "statusText": "Not Found",
+                "message": " The student " + req.params.id + " could not be found",
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": " The student " + req.params.id + " could not be found"
+                }
+            })
+        }
+    }, function(error) {
+        next(error);
+    })
+})
+
+router.patch('/:id', function(req, res, next) {
+    studentRepo.getById(req.params.id, function(data) {
+        if(data) {
+            studentRepo.update(req.body, req.params.id, function(data) {
+                res.status(200).json({
+                    "status": 201,
+                    "statusText": "OK",
+                    "message": "Student with " + req.params.id + " has been updated",
+                    "data": data
+                })
+            }, function(error) {
+                next(error);
+            })
+        } else {
+            res.status(400).json({
+                "status": 400,
+                "statusText": "Not Found",
+                "message": " The student " + req.params.id + " could not be found",
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": " The student " + req.params.id + " could not be found"
+                }
+            })
+        }
     }, function(error) {
         next(error);
     })
