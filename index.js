@@ -30,6 +30,63 @@ router.get('/', function(req, res, next) {
     });
 });
 
+// We need to add the search before the get that has the id
+// Hence we are adding the search here
+// Create GET/search?id=n&name=str to search for students by id or name
+router.get('/search', function (req,res,next) {
+    let searchObject = {
+        "id": req.query.id,
+        "name": req.query.name
+    };
+
+    studentRepo.search(searchObject, function(data){
+        if(data.length) {
+            res.status(200).json({
+                "status": 200,
+                "statusText": "OK",
+                "message": "All students retrieved.",
+                "data": data
+            });
+        } else {
+            res.status(404).json({
+                "status": 404,
+                "statusText": "Not Found"
+            });
+        }
+    },
+    function(error){
+        next(error)
+    });
+})
+
+
+// Create get id route to get a single student
+router.get('/:id', function(req, res, next) {
+    studentRepo.getById(req.params.id, function(data){
+        if(data) {
+            res.status(200).json({
+                "status": 200,
+                "statusText": "OK",
+                "message": "Single student retrieved.",
+                "data": data
+            });
+        } else {
+            res.status(404).json({
+                "status": 404,
+                "statusText": "Not Found",
+                "message": " The pie " + req.params.id + " could not be found",
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": " The pie " + req.params.id + " could not be found"
+                }
+            });
+        }
+    }, function(error){
+        next(error);
+    })
+})
+
+
 
 // Configure router so all routes are prefixed with /api/v1
 app.use('/api/', router);
