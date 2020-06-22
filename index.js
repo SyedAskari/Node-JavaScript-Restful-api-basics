@@ -7,6 +7,7 @@ let express = require('express');
 // The express function creates an express application. Many other objects are created from this application object.
 let app = express();
 let studentRepo = require('./repository/student-repository');
+let errorHelpers = require('./helpers/error-helpers');
 
 // Use the express Router object
 let router = express.Router();
@@ -141,7 +142,7 @@ router.delete('/:id', function(req, res, next) {
         if(data) {
             studentRepo.delete(req.params.id, function(data) {
                 res.status(200).json({
-                    "status": 201,
+                    "status": 200,
                     "statusText": "OK",
                     "message": "Student with " + req.params.id + " has been deleted",
                     "data": "Pie " + req.params.id + " deleted"
@@ -170,7 +171,7 @@ router.patch('/:id', function(req, res, next) {
         if(data) {
             studentRepo.update(req.body, req.params.id, function(data) {
                 res.status(200).json({
-                    "status": 201,
+                    "status": 200,
                     "statusText": "OK",
                     "message": "Student with " + req.params.id + " has been updated",
                     "data": data
@@ -196,6 +197,15 @@ router.patch('/:id', function(req, res, next) {
 
 // Configure router so all routes are prefixed with /api/v1
 app.use('/api/', router);
+
+// configure exception logger, use next to pass it to next custom exception handling middleware
+app.use(errorHelpers.logErrors);
+app.use(errorHelpers.clientErrorHandler);
+// Configure custom exception handling middleware last
+// the express server knows this is the middleware for exception handling
+// through the function(error, req, res, next) parameters (4 parameters)
+app.use(errorHelpers.errorHandler);
+
 
 // Create a server to listen on port 5000
 var server = app.listen(5000, function() {
