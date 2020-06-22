@@ -11,6 +11,11 @@ let studentRepo = require('./repository/student-repository');
 // Use the express Router object
 let router = express.Router();
 
+// Configure middleware to support JSON data parsing in request object
+// This will support passing json data in the request body
+app.use(express.json());
+
+
 // Create GET to return a list of some data you want
 /*
     next is used for the middleware purpose
@@ -87,6 +92,18 @@ router.get('/:id', function(req, res, next) {
 })
 
 
+router.post('/', function(req, res, next) {
+    studentRepo.insert(req.body, function(data) {
+        res.status(201).json({
+            "status": 201,
+            "statusText": "Created",
+            "message": "New student added",
+            "data": data
+        });
+    }, function(error) {
+        next(error);
+    })
+})
 
 // Configure router so all routes are prefixed with /api/v1
 app.use('/api/', router);
