@@ -8,6 +8,7 @@ let express = require('express');
 let app = express();
 let studentRepo = require('./repository/student-repository');
 let errorHelpers = require('./helpers/error-helpers');
+let cors = require("cors");
 
 // Use the express Router object
 let router = express.Router();
@@ -16,6 +17,11 @@ let router = express.Router();
 // This will support passing json data in the request body
 app.use(express.json());
 
+
+// Configure CORS
+// By deafult it allows everything to configure options go to
+// https://expressjs.com/en/resources/middleware/cors.html
+app.use(cors());
 
 // Create GET to return a list of some data you want
 /*
